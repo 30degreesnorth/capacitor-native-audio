@@ -34,6 +34,10 @@ export interface ConfigureOptions {
    * indicating whether or not to disable mixed audio.
    * @default true */
   focus?: boolean;
+  /**
+   * indicating whether or not to pause playing audio when the app goes to the background.
+   * @default true */
+  backgroundPause?: boolean;
 }
 
 export interface PreloadOptions {

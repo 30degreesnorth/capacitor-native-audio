@@ -11,6 +11,7 @@ import static com.getcapacitor.community.audio.Constant.ERROR_AUDIO_ID_MISSING;
 import static com.getcapacitor.community.audio.Constant.LOOP;
 import static com.getcapacitor.community.audio.Constant.OPT_FADE_MUSIC;
 import static com.getcapacitor.community.audio.Constant.OPT_FOCUS_AUDIO;
+import static com.getcapacitor.community.audio.Constant.OPT_BACKGROUND_PAUSE;
 import static com.getcapacitor.community.audio.Constant.VOLUME;
 
 import android.Manifest;
@@ -47,6 +48,7 @@ public class NativeAudio extends Plugin implements AudioManager.OnAudioFocusChan
     private static HashMap<String, AudioAsset> audioAssetList;
     private static ArrayList<AudioAsset> resumeList;
     private boolean fadeMusic = false;
+    private boolean backgroundPause = true;
     private AudioManager audioManager;
 
     @Override
@@ -69,6 +71,10 @@ public class NativeAudio extends Plugin implements AudioManager.OnAudioFocusChan
     @Override
     protected void handleOnPause() {
         super.handleOnPause();
+
+        if (!this.backgroundPause) {
+            return;
+        }
 
         try {
             if (audioAssetList != null) {
@@ -93,6 +99,10 @@ public class NativeAudio extends Plugin implements AudioManager.OnAudioFocusChan
     protected void handleOnResume() {
         super.handleOnResume();
 
+        if (!this.backgroundPause) {
+            return;
+        }
+
         try {
             if (resumeList != null) {
                 while (!resumeList.isEmpty()) {
@@ -113,6 +123,7 @@ public class NativeAudio extends Plugin implements AudioManager.OnAudioFocusChan
         initSoundPool();
 
         if (call.hasOption(OPT_FADE_MUSIC)) this.fadeMusic = call.getBoolean(OPT_FADE_MUSIC);
+        if (call.hasOption(OPT_BACKGROUND_PAUSE)) this.backgroundPause = call.getBoolean(OPT_BACKGROUND_PAUSE);
 
         if (call.hasOption(OPT_FOCUS_AUDIO) && this.audioManager != null) {
             if (call.getBoolean(OPT_FOCUS_AUDIO)) {
